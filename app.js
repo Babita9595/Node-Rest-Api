@@ -16,7 +16,7 @@ let port = process.env.PORT || 9800; //if that not find 2500 on .env file then i
 let cors = require('cors'); 
 let mongo = require('mongodb');
 let MongoClient = mongo.MongoClient;
-let mongoUrl = process.env.MongoLive;
+let mongoUrl = "mongodb+srv://babita:babita2426@cluster0.isekznk.mongodb.net/FlipkartData?retryWrites=true&w=majority".MongoLive;
 let bodyParser = require('body-parser') //use this for postman tool of post api
 let db;
 
