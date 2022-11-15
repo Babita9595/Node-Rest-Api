@@ -48,8 +48,6 @@ categoryId = req.query.categoryId //query param not work
 
         query = {category_id:categoryId}
     }
-
-
 db.collection('category').find().toArray((err,result)=>{
 if(err) throw err;
 res.send(result)
@@ -57,6 +55,115 @@ res.send(result)
 })
    // res.send(`this is from home page,namste`)
     })
+
+
+
+
+//route for category1//
+app.get('/category1',(req,res) => { //route for collection
+    db.collection('category1').find().toArray((err,result)=>{
+    if(err) throw err;
+    res.send(result)
+    
+})
+
+})
+
+
+
+
+    //route for productData  (also work as query-param)//
+    app.get('/productData',(req,res) => { //route for collection
+
+        let query = {};
+        let categoryId= Number(req.query.categoryId);
+        let fashionId= Number(req.query.fashionId);
+        let scrollId= Number(req.query.scrollId);
+
+        if(categoryId){
+           query = {category_id:categoryId} //wrt to category id
+
+        }else if(fashionId){
+        query = {Fashion_id:fashionId} //wrt to fashion id
+
+        }else if(scrollId){
+        query = {scroll_id:scrollId} //wrt to scroll id
+
+        }
+
+
+       db.collection('productData').find(query).toArray((err,result)=>{
+       if(err) throw err;
+       res.send(result)
+       
+   })
+   
+   })
+
+//Now we start Filtering (also work as param)
+app.get('/filter/:categoryId',(req,res) =>{
+    let query = {};
+    let categoryId = Number(req.params.categoryId); //pass the category id as PARAM Data
+    let typeId = Number(req.query.typeId); // pass the type id as Query Param
+
+    let lcost= Number(req.query.lcost);
+    let hcost = Number(req.query.hcost);
+
+    if(req.query.sort){
+       sort={cost:req.query.sort}
+   }              //sort with accending and ecending order
+
+    if(typeId){    //filter data wrt to type id
+   
+       query = {
+           "category_id":categoryId,
+           "type_id": typeId
+
+       }
+
+    }else if(lcost && hcost){   //filter data wrt cost
+       query = {
+           "category_id":categoryId,
+           $and:[{cost:{$gt:lcost,$lt:hcost}}]
+
+       }
+
+    }
+
+     
+   db.collection('productData').find(query).sort(sort).toArray((err,result)=>{
+       if(err) throw err;
+       res.send(result)
+       
+   })
+
+})
+
+
+//PRODUCT Details..........//
+app.get('/details/:id',(req,res) =>{
+
+let id = Number(req.params.id)
+db.collection('productData').find({item_id:id}).toArray((err,result) =>{
+if(err) throw err;
+res.send(result)
+})
+})
+
+
+//place Order//
+app.post('/placeOrder',(req,res) =>{
+console.log(req.body);
+db.collection('productData').insert(req.body,(err,result)=>{
+   if(err) throw err;
+   res.send('order place')
+})
+
+})
+
+
+
+
 
 
 // again route for 'topoffers' collections (under category) 
