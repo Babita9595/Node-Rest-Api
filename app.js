@@ -72,6 +72,19 @@ app.get('/category1',(req,res) => { //route for collection
 
 
 
+
+   // again route for 'scroll'  and collections 
+   app.get('/scroll',(req,res) => { //route for collection
+    db.collection('scroll').find().toArray((err,result)=>{
+    if(err) throw err;
+    res.send(result)
+    
+})
+})
+
+
+
+
     //route for productData  (also work as query-param)//
     app.get('/productData',(req,res) => { //route for collection
 
@@ -151,20 +164,45 @@ res.send(result)
 })
 
 
-//place Order//
+//place Order// (write here data that post in collection of 'orders1')
 app.post('/placeOrder',(req,res) =>{
-console.log(req.body);
-db.collection('productData').insert(req.body,(err,result)=>{
-   if(err) throw err;
-   res.send('order place')
+    console.log(req.body);
+    db.collection('orders1').insert(req.body,(err,result)=>{
+        if(err) throw err;
+        res.send('order place')
+    })
+   
+})
+
+
+
+// LIST OF ORDER again route for orders collections (under category) 
+app.get('/orders1',(req,res) => { //route for collection
+    db.collection('orders1').find().toArray((err,result)=>{
+    if(err) throw err;
+    res.send(result)
+    
 })
 
 })
 
 
+//Order Details wrt orderId(1,2,3)..........//
+app.get('/orders1/:id',(req,res) =>{
+
+    let id = Number(req.params.id)
+    db.collection('orders1').find({orderId:id}).toArray((err,result) =>{
+         if(err) throw err;
+         res.send(result)
+    })
+    })
 
 
 
+
+
+
+    //,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
 // again route for 'topoffers' collections (under category) 
 app.get('/topoffers',(req,res) => { //route for collection
@@ -281,16 +319,6 @@ if(err) throw err;
 
 
 
-   // again route for 'scroll'  and collections 
- app.get('/scroll',(req,res) => { //route for collection
-        db.collection('scroll').find().toArray((err,result)=>{
-        if(err) throw err;
-        res.send(result)
-        
-   })
-})
-
-
 
     // again route for 'Deals of the day' collections 
  app.get('/DealsOfTheDay',(req,res) => { //route for collection
@@ -325,6 +353,11 @@ if(err) throw err;
 })
 
 })
+//,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+
+
+
+
 
 
 //list of order
@@ -342,14 +375,27 @@ app.get('/orders',(req,res) => {
 })
 
 
-//make request for post call in postman //
-app.post('/placeOrder',(req,res) => {
-    console.log(req.body);
-    db.collection('orders').insert(req.body,(err,result) => {
-        if(err) throw err;
-        res.send('Order Placed')
+
+//update order status (wrt orderId(1,2,3))
+app.put('/updateOrder/:id',(req,res) => {
+    let id =Number(req.params.id);
+    db.collection('orders1').updateOne(
+        {orderId:id},
+        {
+          $set:{
+            "status":req.body.status,
+            "bank_name":req.body.bank_name,
+            "date":req.body.date
+          }
+    
+    
+        },(err,result) => {
+         if(err) throw err;
+         res.send('Order Updated')
+    
+        }
+    )
     })
-})
 
 
 
