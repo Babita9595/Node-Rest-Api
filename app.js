@@ -176,15 +176,7 @@ app.post('/placeOrder',(req,res) =>{
 
 
 
-// LIST OF ORDER again route for orders collections (under category) 
-app.get('/orders1',(req,res) => { //route for collection
-    db.collection('orders1').find().toArray((err,result)=>{
-    if(err) throw err;
-    res.send(result)
-    
-})
 
-})
 
 
 //Order Details wrt orderId(1,2,3)..........//
@@ -195,6 +187,47 @@ app.get('/orders1/:id',(req,res) =>{
          if(err) throw err;
          res.send(result)
     })
+    })
+
+
+
+
+//list of order (wrt to email) and if u dont pass query that shows all oders1 list
+app.get('/orders1',(req,res) => {
+    let query = {};
+    let email= req.query.email
+
+    if(email){
+        query={email:email}
+        // query={email}
+    }
+    db.collection('orders1').find(query).toArray((err,result) =>{
+        if(err) throw err;
+        res.send(result)
+    })
+})
+
+
+
+//update order status (wrt orderId(1,2,3))
+app.put('/updateOrder/:id',(req,res) => {
+    let id =Number(req.params.id);
+    db.collection('orders1').updateOne(
+        {orderId:id},
+        {
+          $set:{
+            "status":req.body.status,
+            "bank_name":req.body.bank_name,
+            "date":req.body.date
+          }
+    
+    
+        },(err,result) => {
+         if(err) throw err;
+         res.send('Order Updated')
+    
+        }
+    )
     })
 
 
@@ -359,43 +392,6 @@ if(err) throw err;
 
 
 
-
-//list of order
-app.get('/orders',(req,res) => {
-    let email = req.query.email
-    let query = {};
-    if(email){
-       // query={email:email}
-        query={email}
-    }
-    db.collection('orders').find(query).toArray((err,result) =>{
-        if(err) throw err;
-        res.send(result)
-    })
-})
-
-
-
-//update order status (wrt orderId(1,2,3))
-app.put('/updateOrder/:id',(req,res) => {
-    let id =Number(req.params.id);
-    db.collection('orders1').updateOne(
-        {orderId:id},
-        {
-          $set:{
-            "status":req.body.status,
-            "bank_name":req.body.bank_name,
-            "date":req.body.date
-          }
-    
-    
-        },(err,result) => {
-         if(err) throw err;
-         res.send('Order Updated')
-    
-        }
-    )
-    })
 
 
 
