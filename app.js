@@ -1,6 +1,6 @@
 let express = require('express'); //for required the express//
 let app = express(); //creat object of the express//
-let loginapp = require('./loginapp'); //exta add for loginapp
+
 
 //to replicate the environment variable means set the system environment varible//
 let dotenv = require('dotenv');
